@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h1 class="h3 mb-4 text-center">Connexion</h1>
+
+                        {% if error %}
+                            <div class="alert alert-danger">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
+
+                        <form method="post" action="{{ path('login') }}">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" value="{{ last_username|default('') }}" class="form-control" required autofocus>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" id="password" name="password" class="form-control" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <div class="alert alert-warning mb-0">
+                            Vous n'avez pas de compte ?
+                            <a href="{{ path('inscription') }}" class="alert-link">Inscrivez-vous ici</a>.
+                            Si vous ne vous inscrivez pas, vous ne pourrez pas adopter d'animal.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
