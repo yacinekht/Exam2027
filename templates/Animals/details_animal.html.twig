@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | {{ animal.name }}
+{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+
+        <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+            <div class="card-body">
+
+                <!-- En-tête avec Nom & Actions -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="display-6 fw-bold m-0 text-dark">
+                        <i class="fa-solid fa-paw text-primary me-2"></i>{{ animal.name }}
+                    </h1>
+                    {% if animal.photoFilename %}
+                        <img src="{{ asset('images/' ~ animal.photoFilename) }}"
+                             alt="Photo de {{ animal.name }}"
+                             class="img-fluid rounded-4 mb-4" style="max-height: 400px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light rounded-4 mb-4 d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
+                            <i class="fa-solid fa-paw fa-3x"></i>
+                        </div>
+                    {% endif %}
+                    <span class="badge rounded-pill text-bg-success px-3 py-2 fs-6">
+                        {{ animal.status.value ?? animal.status }}
+                    </span>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <p class="mb-1 text-muted small"><strong>Espèce</strong></p>
+                        <p class="fw-semibold">{{ animal.espece ?? animal.species }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1 text-muted small"><strong>Race</strong></p>
+                        <p class="fw-semibold">{{ animal.race }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1 text-muted small"><strong>Âge</strong></p>
+                        <p class="fw-semibold">{{ animal.age }} ans</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <p class="mb-1 text-muted small"><strong>Description</strong></p>
+                    <p class="bg-light p-3 rounded-3">{{ animal.description }}</p>
+                </div>
+
+                <div class="mb-4">
+                    <p class="mb-1 text-muted small"><strong>Ajouté le</strong></p>
+                    <p class="fw-semibold"><i class="fa-regular fa-calendar me-1"></i> {{ animal.arrivedAt|date('d/m/Y') }}</p>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Zone de Boutons / Liens -->
+                <div class="d-flex align-items-center justify-content-between">
+                    <a href="{{ path('animaux') }}" class="btn-eh-outline">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Retour à la liste
+                    </a>
+
+                    <div class="d-flex gap-2">
+                        {# Affichage du bouton modifier (sécurisé avec le rôle si souhaité) #}
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                            <a href="{{ path('edit_animal', {'id': animal.id}) }}" class="btn-eh">
+                                <i class="fa-solid fa-pen-to-square me-1"></i> Modifier
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
