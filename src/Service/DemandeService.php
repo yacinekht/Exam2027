@@ -7,12 +7,13 @@ namespace App\Service;
 
 
 use App\Entity\Animal;
+
 use App\Entity\Registration;
 use App\Entity\User;
 
 use App\Enum\AdoptionDemandeStatus;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\String\Slugger\SluggerInterface;
+
 
 class DemandeService
 {
@@ -47,4 +48,22 @@ class DemandeService
         return true;
 
     }
+    public function UnRegister(User $user,Animal $animal){
+
+
+        $registration=$this->entityManager-> getRepository(Registration::class)->findOneBy([
+            'user'=>$user,
+            'animal'=>$animal,
+        ]);
+
+        if(!$registration){
+            return false;
+        }
+
+        $this->entityManager->remove($registration);
+        $this->entityManager->flush();
+        return true;
+    }
+
+
 }

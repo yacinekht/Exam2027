@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Demandes d'adoption{% endblock %}
+
+{% block body %}
+    {{ include('_animal_theme.html.twig') }}
+    <div class="animal-theme">
+        <div class="container py-4">
+            <h1 class="fw-bold mb-4">
+                <i class="fa-solid fa-clipboard-list me-2"></i>Demandes d'adoption
+            </h1>
+
+            {% for type in ['success', 'danger'] %}
+                {% for message in app.flashes(type) %}
+                    <div class="alert alert-{{ type }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            {% if registrations is empty %}
+                <div class="alert alert-info">Aucune demande d'adoption pour le moment.</div>
+            {% else %}
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Demandeur</th>
+                                <th>Animal</th>
+                                <th>Statut de l'animal</th>
+                                <th>Statut de la demande</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for registration in registrations %}
+                                {% set status = registration.status.value %}
+                                <tr>
+                                    <td>{{ registration.createdAt|date('d/m/Y') }}</td>
+                                    <td>
+                                        {{ registration.user.fullName }}<br>
+                                        <small class="text-muted">{{ registration.user.email }}</small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('animal_detail', {id: registration.animal.id}) }}">
+                                            {{ registration.animal.name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ registration.animal.status.value|replace({'_': ' '}) }}</td>
+                                    <td>
+                                        {% if status == 'Confirmer' %}
+                                            <span class="badge text-bg-success">Acceptée</span>
+                                        {% elseif status == 'Refuser' %}
+                                            <span class="badge text-bg-danger">Refusée</span>
+                                        {% else %}
+                                            <span class="badge text-bg-warning">En attente</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <form method="post"
+                                              action="{{ path('registration_change_status', {id: registration.id}) }}"
+                                              class="d-inline-flex gap-1">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('registration_status_' ~ registration.id) }}">
+
+                                            {% if status != 'Confirmer' %}
+                                                <button type="submit" name="status" value="Confirmer" class="btn btn-sm btn-success">Accepter</button>
+                                            {% endif %}
+                                            {% if status != 'Refuser' %}
+                                                <button type="submit" name="status" value="Refuser" class="btn btn-sm btn-danger">Refuser</button>
+                                            {% endif %}
+                                            {% if status != 'En_attente' %}
+                                                <button type="submit" name="status" value="En_attente" class="btn btn-sm btn-outline-secondary">En attente</button>
+                                            {% endif %}
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

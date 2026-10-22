@@ -11,6 +11,71 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     {% block stylesheets %}{% endblock %}
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        body { font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+        body.bg-light { background: #fff8f0 !important; }
+
+        /* ---------- Barre de navigation ---------- */
+        .navbar.bg-success {
+            position: relative;
+            background: linear-gradient(90deg, #ff7a59 0%, #ff8fab 50%, #8e7dff 100%) !important;
+            box-shadow: 0 6px 20px rgba(142, 125, 255, .25) !important;
+        }
+        .navbar.bg-success::after {
+            content: ''; position: absolute; left: 0; right: 0; bottom: -5px; height: 5px;
+            background: linear-gradient(90deg, #ffc145, #2ec4b6, #8e7dff, #ff8fab, #ff7a59);
+        }
+        .navbar-brand { font-weight: 800 !important; font-size: 1.35rem; letter-spacing: .3px; }
+        .navbar-brand i { display: inline-block; animation: paw-wiggle 3s ease-in-out infinite; }
+        @keyframes paw-wiggle { 0%, 88%, 100% { transform: rotate(0); } 92% { transform: rotate(-14deg); } 96% { transform: rotate(12deg); } }
+
+        .navbar .nav-link {
+            color: rgba(255, 255, 255, .92) !important; font-weight: 700; font-size: .95rem;
+            white-space: nowrap; border-radius: 999px; padding: .45rem .85rem !important; margin: 0 .1rem;
+            transition: background .2s ease, transform .2s ease;
+        }
+        .navbar .nav-link:hover { background: rgba(255, 255, 255, .25); color: #fff !important; transform: translateY(-2px); }
+        .navbar .nav-link i { margin-right: .2rem; }
+
+        .navbar .badge.text-bg-light { background: #fff !important; color: #3b2f4a !important; border: 0 !important; box-shadow: 0 4px 12px rgba(59, 47, 74, .18); }
+        .navbar .text-success { color: #ff7a59 !important; }
+
+        .navbar .btn-outline-light {
+            border: 2px solid #fff; border-radius: 999px; font-weight: 700;
+            transition: background .2s ease, color .2s ease, transform .2s ease;
+        }
+        .navbar .btn-outline-light:hover { background: #fff; color: #ff7a59; transform: translateY(-2px); }
+
+        /* ---------- Pied de page ---------- */
+        footer.bg-dark {
+            position: relative;
+            background: linear-gradient(135deg, #3b2f4a 0%, #5b3f7a 100%) !important;
+        }
+        footer.bg-dark::before {
+            content: ''; position: absolute; left: 0; right: 0; top: 0; height: 5px;
+            background: linear-gradient(90deg, #ffc145, #2ec4b6, #8e7dff, #ff8fab, #ff7a59);
+        }
+        footer.bg-dark .text-muted { color: #e3d9f0 !important; font-weight: 600; }
+        footer.bg-dark .text-danger { color: #ff8fab !important; animation: heartbeat 1.6s ease-in-out infinite; display: inline-block; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.3); } 30% { transform: scale(1); } }
+
+        /* ---------- Correctif : menu qui déborde ---------- */
+        .navbar > .container { max-width: 100%; padding-left: 1.5rem; padding-right: 1.5rem; }
+        .navbar-brand { font-size: 1.2rem; margin-right: 1rem; }
+        .navbar .nav-link { font-size: .9rem; padding: .4rem .65rem !important; margin: 0; }
+        .navbar .navbar-nav { flex-wrap: wrap; row-gap: .25rem; }
+        .navbar .btn-outline-light, .navbar .badge.text-bg-light { white-space: nowrap; }
+        @media (min-width: 992px) {
+            .navbar-collapse > .d-flex { flex-shrink: 0; margin-left: 1rem; }
+        }
+        @media (max-width: 991.98px) {
+            .navbar .nav-link { border-radius: 14px; }
+            .navbar-collapse > .d-flex { margin-top: .75rem; flex-wrap: wrap; }
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 
@@ -31,16 +96,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('animaux') }}"><i class="bi bi-heart"></i> Nos Animaux</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="bi bi-envelope"></i> Contact</a>
-                </li>
-                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_ORGANIZER') %}
+
+                {# Lien visible uniquement pour un utilisateur connecté #}
+                {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href={{ path('new_animal') }}><i class="bi bi-envelope"></i> Ajouter un nouvelle Animal</a>
+                        <a class="nav-link" href="{{ path('mes_demandes') }}"><i class="bi bi-clipboard-heart"></i> Mes demandes</a>
                     </li>
                 {% endif %}
 
-
+                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_ORGANIZER') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('new_animal') }}"><i class="bi bi-plus-circle"></i> Ajouter un nouvel animal</a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_ORGANIZER') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('demandes_list') }}"><i class="bi bi-inbox"></i> Gérer les demandes</a>
+                    </li>
+                {% endif %}
             </ul>
 
             <!-- Zone Authentification & Déconnexion -->

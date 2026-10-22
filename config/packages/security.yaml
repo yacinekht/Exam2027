@@ -50,6 +50,7 @@ security:
          - { path: ^/profile, roles: ROLE_USER }
          - { path: ^/edit_animal, roles: ROLE_ORGANIZER}
          - { path: ^/new_animal, roles: ROLE_ORGANIZER}
+         - { path: ^/lesdemandes, roles: ROLE_ORGANIZER }
 
 when@test:
     security:

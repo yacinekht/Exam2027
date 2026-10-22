@@ -3,85 +3,133 @@
 {% block title %}{{ parent() }} | Tous les animaux{% endblock %}
 
 {% block body %}
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <div>
-            <h1 class="fw-bold m-0"><i class="fa-solid fa-paw text-primary me-2"></i>Tous les animaux à l'adoption</h1>
-            <p class="text-muted small mt-1">Découvrez nos compagnons en attente d'une famille aimante.</p>
+    {{ include('_animal_theme.html.twig') }}
+    <div class="animal-theme">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="fw-bold m-0"><i class="fa-solid fa-paw text-primary me-2"></i>Tous les animaux à l'adoption</h1>
+                <p class="text-muted small mt-1">Découvrez nos compagnons en attente d'une famille aimante.</p>
+            </div>
+            <a href="/" class="btn-eh-outline">
+                <i class="fa-solid fa-house me-1"></i> Accueil
+            </a>
         </div>
-        <a href="/" class="btn-eh-outline">
-            <i class="fa-solid fa-house me-1"></i> Accueil
-        </a>
-    </div>
 
-    <div class="row g-4">
-        {% for item in animal|default(animals|default([])) %}
-            <div class="col-md-6 col-lg-4">
-                <div class="card-event">
-                    <div>
-                        <!-- En-tête de la carte (Photo / Espèce ou Sexe) -->
-                        <div class="d-flex align-items-start justify-content-between mb-3">
-                            <div class="date-badge text-center p-2 rounded bg-light border">
-                                <i class="fa-solid fa-dog fs-4 text-primary"></i>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="row g-4">
+            {% for item in animal|default(animals|default([])) %}
+                {# Statut de l'animal : disponible / en_cours / adopte #}
+                {% set status = item.status.value ?? 'disponible' %}
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-event">
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="date-badge text-center p-2 rounded bg-light border">
+                                    <i class="fa-solid fa-dog fs-4 text-primary"></i>
+                                </div>
+
+                                <div class="d-flex flex-column align-items-end gap-2">
+                                    {# Badge du statut de l'animal #}
+                                    {% if status == 'Adopté' %}
+                                        <span class="badge rounded-pill text-bg-secondary px-3 py-2">
+                                        <i class="fa-solid fa-heart me-1"></i> Adopté
+                                    </span>
+                                    {% elseif status == 'En_Cours_d\'adoption' %}
+                                        <span class="badge rounded-pill text-bg-warning px-3 py-2">
+                                        <i class="fa-solid fa-hourglass-half me-1"></i> En cours d'adoption
+                                    </span>
+                                    {% else %}
+                                        <span class="badge rounded-pill text-bg-success px-3 py-2">
+                                        <i class="fa-solid fa-circle-check me-1"></i> Disponible
+                                    </span>
+                                    {% endif %}
+
+                                    <span class="badge rounded-pill text-bg-light border px-3 py-2 fw-normal text-muted">
+                                    <i class="fa-solid fa-venus-mars me-1"></i> {{ item.gender ?? item.sexe ?? 'Sexe N/C' }}
+                                </span>
+                                </div>
                             </div>
-                            <span class="badge rounded-pill text-bg-light border px-3 py-2 fw-normal text-muted">
-                                <i class="fa-solid fa-venus-mars me-1"></i> {{ item.gender ?? item.sexe ?? 'Sexe N/C' }}
-                            </span>
+
+                            <h3 class="h5 fw-bold text-dark mb-1">{{ item.name ?? item.nom }}</h3>
+
+                            {% if item.photoFilename %}
+                                <img src="{{ asset('images/' ~ item.photoFilename) }}"
+                                     alt="Photo de {{ item.name ?? item.nom }}"
+                                     class="img-fluid rounded-4 mb-4" style="max-height: 400px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light rounded-4 mb-4 d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
+                                    <i class="fa-solid fa-paw fa-3x"></i>
+                                </div>
+                            {% endif %}
+
+                            <p class="text-muted small mb-2">
+                                <i class="fa-solid fa-tag me-1"></i> {{ item.race ?? item.species ?? 'Race non précisée' }}
+                                • {{ item.age ?? 'Âge non précisé' }}
+                            </p>
+
+                            <p class="text-muted small mb-3 text-truncate">
+                                {{ item.description ?? 'Aucune description disponible pour le moment.' }}
+                            </p>
                         </div>
 
-                        <!-- Nom et informations principales -->
-                        <h3 class="h5 fw-bold text-dark mb-1">{{ item.name ?? item.nom }}</h3>
-                        {% if item.photoFilename %}
-                            <img src="{{ asset('images/' ~ item.photoFilename) }}"
-                                 alt="Photo de {{ item.name }}"
-                                 class="img-fluid rounded-4 mb-4" style="max-height: 400px; object-fit: cover;">
-                        {% else %}
-                            <div class="bg-light rounded-4 mb-4 d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
-                                <i class="fa-solid fa-paw fa-3x"></i>
-                            </div>
-                        {% endif %}
-                        <p class="text-muted small mb-2">
-                            <i class="fa-solid fa-tag me-1"></i> {{ item.race ?? item.species ?? 'Race non précisée' }}
-                            • {{ item.age ?? 'Âge non précisé' }}
-                        </p>
-
-                        <!-- Description courte -->
-                        <p class="text-muted small mb-3 text-truncate">
-                            {{ item.description ?? 'Aucune description disponible pour le moment.' }}
-                        </p>
-                    </div>
-
-                    <!-- Actions / Boutons de la carte -->
-{#                    <div class="pt-3 border-top mt-3">#}
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <a href="{{ path('animal_detail', {id: item.id}) }}">
+                        <!-- Actions -->
+                        <div class="pt-3 border-top mt-3">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <a href="{{ path('animal_detail', {id: item.id}) }}" class="btn-eh-outline w-50 text-center">
                                     Voir les détails
                                 </a>
 
-{#                            <form action="{{ path('#', {'slug': item.slug ?? item.id}) }}" method="post" class="w-50 m-0">#}
-{#                                <button type="submit" class="btn-eh w-100">Adopter</button>#}
-{#                            </form>#}
-                        </div>
+                                {# Pas de bouton si l'animal est adopté ou en cours d'adoption #}
+                                {% if status == 'Disponible_a_l\'adoption'%}
+                                    {% if not app.user %}
+                                        <a href="{{ path('login') }}" class="btn-eh w-50 text-center">
+                                            Se connecter pour adopter
+                                        </a>
 
-{#                         Optionnel : Droits de modification pour les administrateurs ou refuges #}
-                        {% if is_granted('ROLE_ORGANIZER') %}
-                            <div class="text-center mt-2">
-                                <a href="{{ path('edit_animal', {'id': item.id}) }}" class="small text-muted text-decoration-none">
-                                    <i class="fa-solid fa-pen-to-square me-1"></i> Modifier
+                                    {% elseif item.id in demandedAnimalIds|default([]) %}
+                                        <form action="{{ path('retractation_adoption', {id: item.id}) }}" method="post" class="w-50 m-0">
+                                            <button type="submit" class="btn btn-outline-secondary w-100">
+                                                <i class="fa-solid fa-xmark me-1"></i> Me rétracter
+                                            </button>
+                                        </form>
 
-                                </a>
-
+                                    {% else %}
+                                        <form action="{{ path('demande_adoption', {id: item.id}) }}" method="post" class="w-50 m-0">
+                                            <button type="submit" class="btn-eh w-100">
+                                                <i class="fa-solid fa-heart me-1"></i> Adopter
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
                             </div>
-                        {% endif %}
+
+                            {% if is_granted('ROLE_ORGANIZER') %}
+                                <div class="text-center mt-2">
+                                    <a href="{{ path('edit_animal', {'id': item.id}) }}" class="d-inline">
+                                        <i class="fa-solid fa-pen-to-square me-1"></i> Modifier
+                                    </a>
+                                    <form action="{{ path('animaux_delete', {'id': item.id}) }}" method="post" class="d-inline">
+                                    <button type="submit" class="btn-eh w-100">
+                                        <i class="fa-solid fa-heart me-1"></i> Supprimer
+                                    </button></form>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <!-- Cas où aucun animal n'est trouvé dans la base de données -->
-            <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm">
-                <i class="fa-solid fa-paw display-4 text-muted mb-3 d-block"></i>
-                <h4 class="fw-bold">Aucun animal disponible</h4>
-                <p class="text-muted mb-0">Il n'y a aucun animal disponible à l'adoption pour le moment.</p>
-            </div>
-        {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm">
+                    <i class="fa-solid fa-paw display-4 text-muted mb-3 d-block"></i>
+                    <h4 class="fw-bold">Aucun animal disponible</h4>
+                    <p class="text-muted mb-0">Il n'y a aucun animal disponible à l'adoption pour le moment.</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

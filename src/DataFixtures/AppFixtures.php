@@ -103,8 +103,6 @@ class AppFixtures extends Fixture
 
         $manager->flush();
     }
-
-    /** @param list<string> $roles */
     private function createUser(
         ObjectManager $manager,
         string $email,

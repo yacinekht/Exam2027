@@ -3,39 +3,42 @@
 {% block title %}Accueil - AdopteUnCompagnon{% endblock %}
 
 {% block body %}
-    <!-- Hero Banner -->
-    <div class="p-5 mb-5 bg-white rounded-3 shadow-sm text-center">
-        <h1 class="display-4 fw-bold text-success"><i class="bi bi-paw"></i> Trouvez votre nouveau meilleur ami</h1>
-        <p class="lead text-muted mt-3">
-            Des milliers de chiens, chats et autres compagnons n'attendent qu'un foyer aimant.
-            Ouvrez votre cœur et adoptez dès aujourd'hui.
-        </p>
-        <a href="{{ path('animaux') }}" class="btn btn-success btn-lg mt-3 px-4 shadow">
-            <i class="bi bi-search me-2"></i> Voir les animaux à l'adoption
-        </a>
-    </div>
+    {{ include('_animal_theme.html.twig') }}
+    <div class="animal-theme">
+        <!-- Hero Banner -->
+        <div class="p-5 mb-5 bg-white rounded-3 shadow-sm text-center">
+            <h1 class="display-4 fw-bold text-success"><i class="bi bi-paw"></i> Trouvez votre nouveau meilleur ami</h1>
+            <p class="lead text-muted mt-3">
+                Des milliers de chiens, chats et autres compagnons n'attendent qu'un foyer aimant.
+                Ouvrez votre cœur et adoptez dès aujourd'hui.
+            </p>
+            <a href="{{ path('animaux') }}" class="btn btn-success btn-lg mt-3 px-4 shadow">
+                <i class="bi bi-search me-2"></i> Voir les animaux à l'adoption
+            </a>
+        </div>
 
-    <!-- Section Chiffres / Engagement -->
-    <div class="row text-center my-5">
-        <div class="col-md-4 mb-4">
-            <div class="p-4 bg-white rounded shadow-sm">
-                <i class="bi bi-house-heart fs-1 text-success"></i>
-                <h3 class="h5 mt-3">Refuges partenaires</h3>
-                <p class="text-muted">Un réseau engagé pour la protection animale.</p>
+        <!-- Section Chiffres / Engagement -->
+        <div class="row text-center my-5">
+            <div class="col-md-4 mb-4">
+                <div class="p-4 bg-white rounded shadow-sm">
+                    <i class="bi bi-house-heart fs-1 text-success"></i>
+                    <h3 class="h5 mt-3">Refuges partenaires</h3>
+                    <p class="text-muted">Un réseau engagé pour la protection animale.</p>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="p-4 bg-white rounded shadow-sm">
-                <i class="bi bi-check-circle fs-1 text-success"></i>
-                <h3 class="h5 mt-3">Animaux vaccinés</h3>
-                <p class="text-muted">Tous nos animaux sont identifiés, vaccinés et stérilisés.</p>
+            <div class="col-md-4 mb-4">
+                <div class="p-4 bg-white rounded shadow-sm">
+                    <i class="bi bi-check-circle fs-1 text-success"></i>
+                    <h3 class="h5 mt-3">Animaux vaccinés</h3>
+                    <p class="text-muted">Tous nos animaux sont identifiés, vaccinés et stérilisés.</p>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="p-4 bg-white rounded shadow-sm">
-                <i class="bi bi-emoji-smile fs-1 text-success"></i>
-                <h3 class="h5 mt-3">Accompagnement</h3>
-                <p class="text-muted">Un suivi avant et après chaque adoption.</p>
+            <div class="col-md-4 mb-4">
+                <div class="p-4 bg-white rounded shadow-sm">
+                    <i class="bi bi-emoji-smile fs-1 text-success"></i>
+                    <h3 class="h5 mt-3">Accompagnement</h3>
+                    <p class="text-muted">Un suivi avant et après chaque adoption.</p>
+                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Mes demandes d'adoption{% endblock %}
+
+{% block body %}
+    {{ include('_animal_theme.html.twig') }}
+    <div class="animal-theme">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="fw-bold m-0"><i class="fa-solid fa-heart text-primary me-2"></i>Mes demandes d'adoption</h1>
+                <p class="text-muted small mt-1">Suivez l'état de vos demandes d'adoption.</p>
+            </div>
+            <a href="/" class="btn-eh-outline">
+                <i class="fa-solid fa-house me-1"></i> Accueil
+            </a>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="row g-4">
+            {% for demande in demandes|default([]) %}
+                {% set item = demande.animal %}
+                {% set statut = demande.status.name ?? 'En_attente' %}
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-event">
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="date-badge text-center p-2 rounded bg-light border">
+                                    <i class="fa-solid fa-dog fs-4 text-primary"></i>
+                                </div>
+
+                                {# Statut de la demande #}
+                                {% if statut == 'Acceptee' %}
+                                    <span class="badge rounded-pill text-bg-success px-3 py-2">
+                                    <i class="fa-solid fa-check me-1"></i> Acceptée
+                                </span>
+                                {% elseif statut == 'Refusee' %}
+                                    <span class="badge rounded-pill text-bg-danger px-3 py-2">
+                                    <i class="fa-solid fa-xmark me-1"></i> Refusée
+                                </span>
+                                {% else %}
+                                    <span class="badge rounded-pill text-bg-warning px-3 py-2">
+                                    <i class="fa-solid fa-hourglass-half me-1"></i> En attente
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <h3 class="h5 fw-bold text-dark mb-1">{{ item.name ?? item.nom }}</h3>
+
+                            {% if item.photoFilename %}
+                                <img src="{{ asset('images/' ~ item.photoFilename) }}"
+                                     alt="Photo de {{ item.name ?? item.nom }}"
+                                     class="img-fluid rounded-4 mb-4" style="max-height: 400px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light rounded-4 mb-4 d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
+                                    <i class="fa-solid fa-paw fa-3x"></i>
+                                </div>
+                            {% endif %}
+
+                            <p class="text-muted small mb-2">
+                                <i class="fa-solid fa-tag me-1"></i> {{ item.race ?? item.species ?? 'Race non précisée' }}
+                                • {{ item.age ?? 'Âge non précisé' }}
+                            </p>
+
+                            <p class="text-muted small mb-2">
+                                <i class="fa-regular fa-calendar me-1"></i>
+                                Demande envoyée le {{ demande.createdAt|date('d/m/Y') }}
+                            </p>
+
+                            <p class="text-muted small mb-3 text-truncate">
+                                {{ item.description ?? 'Aucune description disponible pour le moment.' }}
+                            </p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="pt-3 border-top mt-3">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <a href="{{ path('animal_detail', {id: item.id}) }}" class="btn-eh-outline w-50 text-center">
+                                    Voir les détails
+                                </a>
+
+                                {# Rétractation possible uniquement tant que la demande est en attente #}
+                                {% if statut == 'En_attente' %}
+                                    <form action="{{ path('retractation_adoption', {id: item.id}) }}" method="post" class="w-50 m-0">
+                                        <button type="submit" class="btn btn-outline-secondary w-100">
+                                            <i class="fa-solid fa-xmark me-1"></i> Me rétracter
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm">
+                    <i class="fa-solid fa-heart display-4 text-muted mb-3 d-block"></i>
+                    <h4 class="fw-bold">Aucune demande</h4>
+                    <p class="text-muted mb-0">Vous n'avez fait aucune demande d'adoption pour le moment.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
